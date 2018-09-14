@@ -3,7 +3,7 @@
 ### Contributors: Shakirah Nakalungi, Mark Okello
 September 3, 2018
 
-```{r setup, include=FALSE}
+```{r setup, include=T}
 knitr::opts_chunk$set(echo = T)
 ```
 
