@@ -1,12 +1,16 @@
 ---
-title: "Support Vector Machine (SVM)"
+title: 
 author: "Shakirah Nakalungi, Mark Okello"
-date: "September 3, 2018"
+date: ""
 output: html_document
 ---
 
+## Support Vector Machine (SVM)
+### Contributors: Shakirah Nakalungi, Mark Okello
+September 3, 2018
+
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = F)
 ```
 
 ### Understanding SVM
