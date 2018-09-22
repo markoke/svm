@@ -1,3 +1,8 @@
+---
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
 
 ## Support Vector Machine (SVM)
 ### Contributors: Shakirah Nakalungi, Mark Okello
@@ -53,103 +58,3 @@ There are many kernel functions but the common and a must know are:
 4. sigmoid: $K(x i , x j ) = tanh(γx i T x j + r)$
 
 ---------------
-
-Load the packages to use in the project
-
-```{r echo=T}
-library(dplyr)
-library(magrittr)
-library(flipTime) # To install it first install devtools, library(devtools) to load the it. 
-# run install_github("Displayr/flipTime")
-```
-
-
-Loading the data
-
-```{r  echo=T}
-phq9_data <- read.csv("data/PHQ_9 FORM.csv")
-```
-
-knowning what the data contains
-```{r  echo=T}
-str(phq9_data)
-head(phq9_data, 3)
-tail(phq9_data, 3)
-
-
-```
-
-First lets remove the timestamp from the date in Recieved_At column since the PHQ Administration column doesnot have it.
-Removing time zone using grab sub string method, we had no better way of doing it
-
-```{r}
-phq9_data$Received_At <- gsub(x=phq9_data$Received_At,pattern=" +00:00",
-                              replacement="",fixed=T)
-```
-
-lets first convert our two dates columns to Date since they are factors as seen from str() above
-
-```{r}
-phq9_data$Received_At <-AsDateTime(phq9_data$Received_At) # using the flipTime package
-phq9_data$PHQ_9_Administration <-AsDateTime(phq9_data$PHQ_9_Administration)
-```
-
-Since all our time formats are in POSIXct, lets use as.Date trick to get only date for Recieved at and transform PHQ_Administration to Date
-
-```{r}
-phq9_data$Received_At <-as.Date(phq9_data$Received_At)
-phq9_data$PHQ_9_Administration <-as.Date(phq9_data$PHQ_9_Administration)
-```
-IF we just tranformed it directly minus transforming date(factor) to POSIXct it would return NA
-
-Getting days between PHQ_Administration and Recieved_at
-```{r}
-phq9_data$days_in_between <- phq9_data$Received_At- phq9_data$PHQ_9_Administration
-head(phq9_data, 3)
-```
-
-We nolonger need the Received_At and PHQ_9_Administration columns.
-
-```{r}
-phq9_data <- phq9_data[,3:16]
-head(phq9_data,3)
-```
-
-
-changing status column as character not factor so that its easy for us to play with it.
-
-```{r}
-phq9_data$status <- as.character(phq9_data$status)
-
-```
-
-so since classification takes two factors lets transform status into two levels, 1 - difficuilt(extremely difficult and very difficult), 0 - (somewhat difficult and Not difficult at all)
-
-```{r}
-phq9_data$status <- sub("Somewhat Difficult","Not Difficult at All",phq9_data[,13])
-phq9_data$status <- sub("Very Difficult","Extremely Difficult",phq9_data[,13])
-
-```
-
-We tried it with a for loop but it took us 7.26 - 8 mins to finish running
-
-we take back the status column to factors
-```{r}
-phq9_data$status <- as.factor(phq9_data$status)
-
-str(phq9_data$status)
-```
-
-------------------------
-Ready to start with svm
-
-
-Many books, tutorials and lectures use the following approach:
-
-1. Transform data to the format of an SVM package
-2. Randomly try a few kernels and parameters
-3. Test
-
-lets see that!
-
-
